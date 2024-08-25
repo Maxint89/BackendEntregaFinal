@@ -1,0 +1,132 @@
+[
+  {
+    "id": 1,
+    "title": "Cerveza",
+    "description": "Heineken",
+    "price": 600,
+    "code": "ber123",
+    "stock": 96,
+    "category": "bebida",
+    "status": true,
+    "img": [
+      "img/heineken.jpeg"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Vino",
+    "description": "Toro Viejo",
+    "price": 250,
+    "code": "tor487",
+    "stock": 52,
+    "category": "bebida",
+    "status": true,
+    "img": [
+      "img/toroviejo.jpeg"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Agua",
+    "description": "Glaciar",
+    "price": 210,
+    "code": "gla789",
+    "stock": 70,
+    "category": "bebida",
+    "status": true,
+    "img": [
+      "img/glaciar.jpeg"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Fideos",
+    "description": "Don Vicente",
+    "price": 350,
+    "code": "dvc975",
+    "stock": 127,
+    "category": "alimento",
+    "status": true,
+    "img": [
+      "img/donvicente.jpg"
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Arroz",
+    "description": "Gallo Oro",
+    "price": 430,
+    "code": "goo746",
+    "stock": 33,
+    "category": "alimento",
+    "status": true,
+    "img": [
+      "img/gallooro.jpg"
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Harina",
+    "description": "Blancaflor",
+    "price": 300,
+    "code": "hbf947",
+    "stock": 35,
+    "category": "alimento",
+    "status": true,
+    "img": [
+      "img/blancaflor.jpg"
+    ]
+  },
+  {
+    "id": 7,
+    "title": "Aceite de oliva",
+    "description": "Natura",
+    "price": 490,
+    "code": "ano725",
+    "stock": 12,
+    "category": "alimento",
+    "status": true,
+    "img": [
+      "img/olivanatura.jpg"
+    ]
+  },
+  {
+    "id": 8,
+    "title": "Vinagre de alcohol",
+    "description": "Menoyo",
+    "price": 280,
+    "code": "vda321",
+    "stock": 29,
+    "category": "alimento",
+    "status": true,
+    "img": [
+      "img/vinagre.jpg"
+    ]
+  },
+  {
+    "id": 9,
+    "title": "Servilletas de papel",
+    "description": "Elegante",
+    "price": 270,
+    "code": "sdp123",
+    "stock": 24,
+    "category": "limpieza",
+    "status": true,
+    "img": [
+      "img/servilletasdepapel.jpg"
+    ]
+  },
+  {
+    "id": 10,
+    "title": "Papel higienico",
+    "description": "Scott",
+    "price": 235,
+    "code": "phs146",
+    "stock": 23,
+    "category": "limpieza",
+    "status": true,
+    "img": [
+      "img/papelhigienico.jpg"
+    ]
+  }
+]
