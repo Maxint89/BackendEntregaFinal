@@ -1,50 +1,47 @@
 import mongoose from "mongoose";
+import mongoosePaginate from 'mongoose-paginate-v2';
 
-// Creamos el schema y el model de productos:
 const productoSchema = new mongoose.Schema({
     title: {
-        type: String,
+        type: String, 
         required: true
-    },
+    }, 
     description: {
-        type: String,
+        type: String, 
         required: true
-    },
+    }, 
     price: {
-        type: Number,
-        required: true,
-        min: [0, 'El precio debe ser un número positivo'] // Validación para asegurar precios positivos
-    },
+        type: Number, 
+        required: true
+    }, 
     img: {
         type: String
-    },
+    }, 
     code: {
-        type: String,
-        required: true,
+        type: String, 
+        required: true, 
         unique: true
-    },
+    }, 
     stock: {
-        type: Number,
-        required: true,
-        min: [0, 'El stock debe ser un número no negativo'] // Validación para asegurar stock no negativo
-    },
+        type: Number, 
+        required: true
+    }, 
     category: {
-        type: String,
+        type: String, 
         required: true
-    },
+    }, 
     status: {
-        type: Boolean,
+        type: Boolean, 
         required: true
-    },
+    }, 
     thumbnails: {
         type: [String]
     }
 });
 
-// Creamos el modelo
+// Añadí el plugin de paginación al esquema
+productoSchema.plugin(mongoosePaginate);
+
 const ProductModel = mongoose.model("Product", productoSchema);
 
 export default ProductModel;
-
-
-

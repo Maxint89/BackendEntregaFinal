@@ -1,64 +1,83 @@
-const socket = io();
+document.addEventListener('DOMContentLoaded', () => {
+    const socket = io();
 
-socket.on("products", (data) => {
+    // Escuchar eventos de productos
+    socket.on("productos", (data) => {
+        renderProductos(data);
+    });
 
-    renderProducts(data);
-})
+    // Renderizar productos en el contenedor
+    const renderProductos = (data) => {
+        const contenedorProductos = document.getElementById("contenedorProductos");
+        if (contenedorProductos) {
+            contenedorProductos.innerHTML = "";
 
-const renderProducts = (products) => {
-    const containerProducts = document.getElementById("containerProducts");
-    containerProducts.classList.add("productsContainer");
-    containerProducts.innerHTML = "";
+            data.forEach(item => {
+                const card = document.createElement("div");
+                card.classList.add("product-card");
 
-    products.forEach(item => {
-        const card = document.createElement("div");
-        card.classList.add("cardProducto");
-        card.innerHTML = `
-                        <div class="cardContent">
-                            <p>ID: ${item.id}</p>
-                            <p class="cardTitle">Título: ${item.title}</p>
-                            <img src="${item.img}" alt="${item.title}" class="cardImg">
-                            <p class="cardDescription">Descripción: ${item.description}</p>
-                            <p class="cardPrice">Precio: ${item.price}</p>
-                            <div class="cardFooter">
-                                <p class="cardStock">Stock: ${item.stock}</p>
-                                <p class="cardCategory">Categoría: ${item.category}</p>
-                            </div>
-                        </div>
-                        <button class="cardButton"> Eliminar </button>
-                        `
+                card.innerHTML = `<p class="product-id">ID: ${item.id}</p>
+                                    <p class="product-title">Título: ${item.title}</p>
+                                    <p class="product-description">Descripción: ${item.description}</p>
+                                    <p class="product-price">Precio: $${item.price}</p>
+                                    <p class="product-thumbnails">Imagen: ${item.thumbnails}</p>
+                                    <p class="product-code">Código: ${item.code}</p>
+                                    <p class="product-stock">Stock: ${item.stock}</p>
+                                    <p class="product-category">Categoría: ${item.category}</p>
+                                    <p class="product-status">Estado: ${item.status ? 'Disponible' : 'No Disponible'}</p>
+                                    <button class="delete-button">Eliminar ❌</button>
+                                    `;
+                contenedorProductos.appendChild(card);
 
-        containerProducts.appendChild(card);
-
-        card.querySelector("button").addEventListener("click", () => {
-            eliminarProducto(item.id);
-        })
-    })
-}
-
-const eliminarProducto = (id) => {
-    socket.emit("deleteProduct", id);
-}
-
-//AGREGAR PRODUCTO
-document.getElementById("addProductForm").addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const newProduct = {
-        title: document.getElementById("title").value,
-        description: document.getElementById("description").value,
-        price: document.getElementById("price").value,
-        img: document.getElementById("img").value,
-        code: document.getElementById("code").value,
-        stock: document.getElementById("stock").value,
-        category: document.getElementById("category").value
+                const eliminarButton = card.querySelector(".delete-button");
+                if (eliminarButton) {
+                    eliminarButton.addEventListener("click", () => {
+                        eliminarProducto(item.id);
+                    });
+                }
+            });
+        } else {
+            console.error("El contenedor de productos no se encontró en el DOM");
+        }
     };
 
-    socket.emit("addProduct", newProduct);
+    // Función para eliminar un producto
+    const eliminarProducto = (id) => {
+        socket.emit("eliminarProducto", id);
+    };
 
-    document.getElementById("addProductForm").reset();
-});
+    // Agregar un producto mediante el formulario
+    const btnEnviar = document.getElementById("btnEnviar");
+    if (btnEnviar) {
+        btnEnviar.addEventListener("click", () => {
+            agregarProducto();
+        });
+    } else {
+        console.error("El botón de enviar no se encontró en el DOM");
+    }
 
-socket.on("products", (data) => {
-    renderProducts(data);
+    const agregarProducto = () => {
+        const producto = {
+            title: document.getElementById("title").value,
+            description: document.getElementById("description").value,
+            price: document.getElementById("price").value,
+            thumbnails: document.getElementById("thumbnails").value,
+            code: document.getElementById("code").value,
+            stock: document.getElementById("stock").value,
+            category: document.getElementById("category").value,
+            status: document.getElementById("status").value === "true",
+        };
+
+        socket.emit("agregarProducto", producto);
+
+        // Limpiar los campos del formulario después de enviar el producto
+        document.getElementById("title").value = '';
+        document.getElementById("description").value = '';
+        document.getElementById("price").value = '';
+        document.getElementById("thumbnails").value = 'Sin Imagen';
+        document.getElementById("code").value = '';
+        document.getElementById("stock").value = '';
+        document.getElementById("category").value = '';
+        document.getElementById("status").value = 'true';
+    };
 });

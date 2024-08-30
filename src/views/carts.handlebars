@@ -1,8 +1,14 @@
-<h1>Carrito de Compras</h1>
+<div class="container">
+    <h1>Tu Carrito</h1>
 
-{{#each productos}}
-<div>
-    <p>Producto: {{this.product.title}}</p>
-    <p>Cantidad: {{this.quantity}}</p>
+    <ul class="cart-list">
+        {{#each products}}
+        <li class="cart-item">
+            <p><strong>cafe:</strong> {{this.product.title}}</p>
+            <p><strong>Cantidad:</strong> {{this.quantity}}</p>
+        </li>
+        {{else}}
+        <li class="cart-item">El carrito no tiene contenido.</li>
+        {{/each}}
+    </ul>
 </div>
-{{/each}}

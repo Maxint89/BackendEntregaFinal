@@ -1,48 +1,57 @@
-import express from 'express';
-import { engine } from 'express-handlebars';
+import express from "express";
+import { engine } from "express-handlebars";
 import { Server } from "socket.io";
-import productRouter from "./routes/products.router.js";
-import cartRouter from "./routes/cart.router.js";
-import { viewsRouter } from "./routes/views.routes.js";
-import ".database.js";
-import ProductManager from './dao/fs/product-manager.js';
+import productsRouter from "./routes/products.router.js";
+import cartsRouter from "./routes/carts.router.js";
+import viewsRouter from "./routes/views.router.js";
+import ProductManager from "./dao/db/product-manager-db.js";
+import "./database.js";
+
 const app = express();
-const PORT = 8080;
-const productsManager = new ProductManager("./src/data/products.json");
+const PUERTO = 8080;
 
-// Configuración del motor de plantillas Handlebars
-app.engine('handlebars', engine());
-app.set('view engine', 'handlebars');
-app.set('views', 'src/views');
-
+// Middleware
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static("./src/public"));
+app.use(express.static("./src/public")); 
 
-app.use("/api/products", productRouter);
-app.use("/api/carts", cartRouter);
-app.use('/', viewsRouter);
+//Express-Handlebars
+app.engine("handlebars", engine()); 
+app.set("view engine", "handlebars"); 
+app.set("views", "./src/views"); 
 
-const httpServer = app.listen(PORT, () => {
-    console.log(`Escuchando en el puerto: ${PORT}`);
+// Rutas
+app.use("/api/products", productsRouter);
+app.use("/api/carts", cartsRouter);
+app.use("/", viewsRouter);
+
+const httpServer = app.listen(PUERTO, () => {
+    console.log(`Escuchando el servidor en el puerto:${PUERTO}`);
 });
 
+// Inicialización del ProductManager
+const productManager = new ProductManager("./src/data/products.json");
+
+// Inicialización del servidor de Socket.IO
 const io = new Server(httpServer);
 
 io.on("connection", async (socket) => {
-    console.log("Se ha conectado un nuevo cliente");
-    socket.emit("products", await productsManager.getProducts());
+    console.log("Un Cliente se conectó");
 
-    socket.on("deleteProduct", async (id) => {
-        await productsManager.deleteProduct(id);
-        io.emit("products", await productsManager.getProducts());
+    // Enviar lista de productos al cliente al conectarse
+    socket.emit("productos", await productManager.getProducts());
+
+    // Manejo del evento de eliminar producto
+    socket.on("eliminarProducto", async (id) => {
+        await productManager.deleteProduct(id);
+        // Enviar lista actualizada de productos a todos los clientes
+        io.sockets.emit("productos", await productManager.getProducts());
     });
 
-    socket.on("addProduct", async (nuevoProducto) => {
-        try {
-            await productsManager.addProduct(nuevoProducto);
-            io.sockets.emit("products", await productsManager.getProducts());
-        } catch (error) {
-            console.log("Error al agregar el producto:", error);
-        }
+    // Manejo del evento de agregar producto
+    socket.on("agregarProducto", async (producto) => {
+        await productManager.addProduct(producto);
+        // Enviar lista actualizada de productos a todos los clientes
+        io.sockets.emit("productos", await productManager.getProducts());
     });
 });

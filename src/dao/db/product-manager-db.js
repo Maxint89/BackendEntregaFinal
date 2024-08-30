@@ -1,26 +1,24 @@
-
 import ProductModel from "../models/product.model.js";
-
 
 class ProductManager {
 
+    // Agregar un nuevo producto
     async addProduct({ title, description, price, img, code, stock, category, thumbnails }) {
         try {
-
-            if (!title || !description || !price || !code || !stock || !category) {
-                console.log("Todos los campos son obligatorios");
+            // Validar campos obligatorios
+            if (!title || !description || !price || !thumbnails || !code || !stock || !category) {
+                console.log("Todos los campos son obligatorios!!");
                 return;
             }
 
-            //Cambiamos la validacion: 
-
+            // Verificar si el producto con el mismo código ya existe
             const existeProducto = await ProductModel.findOne({ code: code });
-
             if (existeProducto) {
-                console.log("El codigo debe ser unico");
+                console.log("El código debe ser único");
                 return;
             }
 
+            // Crear y guardar el nuevo producto
             const newProduct = new ProductModel({
                 title,
                 description,
@@ -41,60 +39,21 @@ class ProductManager {
         }
     }
 
-    async getProducts({ limit = 10, page = 1, sort, query } = {}) {
+    // Obtener productos con filtros y opciones de paginación
+    async getProducts(filter = {}, options = {}) {
         try {
-            const skip = (page - 1) * limit;
-
-            let queryOptions = {};
-
-
-            if (query) {
-                queryOptions = { category: query };
-            }
-
-            // Configuracion de las opciones de ordenamiento
-            const sortOptions = {};
-            if (sort) {
-                if (sort === 'asc' || sort === 'desc') {
-                    sortOptions.price = sort === 'asc' ? 1 : -1;
-                }
-            }
-
-            // Obtengo los productos con paginación, filtrado y ordenamiento
-            const productos = await ProductModel
-                .find(queryOptions)
-                .sort(sortOptions)
-                .skip(skip)
-                .limit(limit);
-
-            // Conteo del número total de productos para calcular las páginas
-            const totalProducts = await ProductModel.countDocuments(queryOptions);
-
-            const totalPages = Math.ceil(totalProducts / limit);
-            const hasPrevPage = page > 1;
-            const hasNextPage = page < totalPages;
-
-            return {
-                docs: productos,
-                totalPages,
-                prevPage: hasPrevPage ? page - 1 : null,
-                nextPage: hasNextPage ? page + 1 : null,
-                page,
-                hasPrevPage,
-                hasNextPage,
-                prevLink: hasPrevPage ? `/api/products?limit=${limit}&page=${page - 1}&sort=${sort}&query=${query}` : null,
-                nextLink: hasNextPage ? `/api/products?limit=${limit}&page=${page + 1}&sort=${sort}&query=${query}` : null,
-            };
+            const result = await ProductModel.paginate(filter, options);
+            result.docs = result.docs.map(doc => doc.toObject());
+            return result;
         } catch (error) {
             console.log("Error al obtener los productos", error);
             throw error;
         }
     }
 
-
+    // Obtener un producto por su ID
     async getProductById(id) {
         try {
-
             const buscado = await ProductModel.findById(id);
 
             if (!buscado) {
@@ -110,14 +69,15 @@ class ProductManager {
         }
     }
 
-    async updateProduct(id, productoActualizado) {
+    // Actualizar un producto por su ID
+    async updateProduct(id, updatedFields) {
         try {
-            const producto = await ProductModel.findByIdAndUpdate(id, productoActualizado);
+            const producto = await ProductModel.findByIdAndUpdate(id, updatedFields);
             if (!producto) {
-                console.log("No se encuentra el producto que queres actualizar");
+                console.log("No se encuentra el producto a actualizar");
                 return null;
             } else {
-                console.log("Producto actualizado con exito");
+                console.log("Producto actualizado con éxito!!");
                 return producto;
             }
         } catch (error) {
@@ -126,14 +86,15 @@ class ProductManager {
         }
     }
 
+    // Eliminar un producto por su ID
     async deleteProduct(id) {
         try {
             const borrado = await ProductModel.findByIdAndDelete(id);
             if (!borrado) {
-                console.log("No se encontró un producto con el ID ${id}. Verifica que el ID sea correcto y que el producto exista");
+                console.log("No se encuentra el producto que se debe borrar");
                 return null;
             } else {
-                console.log("Producto eliminado !");
+                console.log("Producto eliminado!");
                 return borrado;
             }
         } catch (error) {

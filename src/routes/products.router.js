@@ -1,82 +1,137 @@
 import express from "express";
 import ProductManager from "../dao/db/product-manager-db.js";
-const manager = new ProductManager();
+
 const router = express.Router();
+const productManager = new ProductManager();
 
-//Metodo para mostrar todos los productos:
+// Listar todos los productos con paginación, límite, filtro y ordenamiento
 router.get("/", async (req, res) => {
-    const limit = req.query.limit;
     try {
-        const arrayProductos = await manager.getProducts();
-        if (limit) {
-            res.send(arrayProductos.slice(0, limit));
-        } else {
-            res.send(arrayProductos);
-        }
-    } catch (error) {
-        res.status(500).send("Error interno del servidor");
-    }
-})
+        const { limit = 9, page = 1, sort, query } = req.query;
+        const filtro = {};
 
-//Metodo que busca un producto por su id: 
+        // Construir el filtro basado en la query
+        if (query) {
+            const filtroObject = JSON.parse(query);
+            Object.assign(filtro, filtroObject);
+        }
+
+        // Construir el orden basado en el sort
+        const opcionesOrden = sort === "asc" ? { price: 1 } : sort === "desc" ? { price: -1 } : {};
+
+        const opciones = {
+            page: parseInt(page, 10),
+            limit: parseInt(limit, 10),
+            sort: opcionesOrden
+        };
+
+        const resultado = await productManager.getProducts(filtro, opciones);
+
+        const respuesta = {
+            status: "success",
+            payload: resultado.docs,
+            totalPages: resultado.totalPages,
+            prevPage: resultado.hasPrevPage ? resultado.prevPage : null,
+            nextPage: resultado.hasNextPage ? resultado.nextPage : null,
+            page: resultado.page,
+            hasPrevPage: resultado.hasPrevPage,
+            hasNextPage: resultado.hasNextPage,
+            prevLink: resultado.hasPrevPage ? `/api/products?limit=${limit}&page=${resultado.prevPage}&sort=${sort}&query=${query}` : null,
+            nextLink: resultado.hasNextPage ? `/api/products?limit=${limit}&page=${resultado.nextPage}&sort=${sort}&query=${query}` : null
+        };
+
+        res.json(respuesta);
+    } catch (error) {
+        console.error("Error al obtener los productos:", error);
+        res.status(500).json({
+            status: "error",
+            message: "No se pudieron obtener los productos"
+        });
+    }
+});
+
+// Obtener un producto por ID
 router.get("/:pid", async (req, res) => {
-    let id = req.params.pid;
-    try {
-        const producto = await manager.getProductById(parseInt(id));
+    const idProducto = req.params.pid;
 
+    try {
+        const producto = await productManager.getProductById(idProducto);
         if (!producto) {
-            res.send("Producto no encontrado");
-        } else {
-            res.send(producto);
+            return res.status(404).json({
+                success: false,
+                message: "Producto no encontrado"
+            });
         }
+
+        res.json({
+            success: true,
+            data: producto
+        });
     } catch (error) {
-        res.send("ID de producto no existente");
+        console.error("Error al obtener el producto:", error);
+        res.status(500).json({
+            success: false,
+            message: "No se pudo obtener el producto"
+        });
     }
-})
+});
 
-
-//Metodo para agregar un nuevo producto: 
+// Agregar un nuevo producto
 router.post("/", async (req, res) => {
-    const nuevoProducto = req.body;    
+    const nuevoProducto = req.body;
+
     try {
-        await manager.addProduct(nuevoProducto); 
-
-        res.status(201).send("Producto agregado exitosamente"); 
+        await productManager.addProduct(nuevoProducto);
+        res.status(201).json({
+            success: true,
+            message: "Producto agregado exitosamente"
+        });
     } catch (error) {
-        res.status(500).json({status: "error", message: error.message});
+        console.error("Error al agregar el producto:", error);
+        res.status(500).json({
+            success: false,
+            message: "No se pudo agregar el producto"
+        });
     }
-})
+});
 
-// Método para actualizar el producto con la id = pid:
+// Actualizar un producto por ID
 router.put("/:pid", async (req, res) => {
-    const id = parseInt(req.params.pid);
+    const idProducto = req.params.pid;
     const productoActualizado = req.body;
+
     try {
-        const productoExistente = await manager.getProductById(id);
-        if (!productoExistente) {
-            return res.status(404).send("Producto no encontrado");
-        }
-        const productoModificado = { ...productoExistente, ...productoActualizado };
-        await manager.updateProduct(id, productoModificado);
-        res.send("Producto actualizado exitosamente");
+        await productManager.updateProduct(idProducto, productoActualizado);
+        res.json({
+            success: true,
+            message: "Producto actualizado exitosamente"
+        });
     } catch (error) {
-        res.status(500).json({ status: "error", message: error.message });
+        console.error("Error al actualizar el producto:", error);
+        res.status(500).json({
+            success: false,
+            message: "No se pudo actualizar el producto"
+        });
     }
 });
 
-// Método para eliminar el producto con la id = pid:
+// Eliminar un producto por ID
 router.delete("/:pid", async (req, res) => {
-    const id = parseInt(req.params.pid);
+    const idProducto = req.params.pid;
+
     try {
-        const productoExistente = await manager.getProductById(id);
-        if (!productoExistente) {
-            return res.status(404).send("Producto no encontrado");
-        }
-        await manager.deleteProduct(id);
-        res.send("Producto eliminado exitosamente");
+        await productManager.deleteProduct(idProducto);
+        res.json({
+            success: true,
+            message: "Producto eliminado exitosamente"
+        });
     } catch (error) {
-        res.status(500).json({ status: "error", message: error.message });
+        console.error("Error al eliminar el producto:", error);
+        res.status(500).json({
+            success: false,
+            message: "No se pudo eliminar el producto"
+        });
     }
 });
 
-export default router; 
+export default router;
