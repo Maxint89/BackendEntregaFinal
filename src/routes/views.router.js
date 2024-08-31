@@ -21,7 +21,7 @@ router.get("/realtimeproducts", (req, res) => {
 
 // Mostrar todos los productos con paginación y ordenamiento
 router.get("/products", async (req, res) => {
-    const { page = 1, limit = 9, sort = 'asc' } = req.query;
+    const { page = 1, limit = 3, sort = 'asc' } = req.query;
     const opciones = {
         page: parseInt(page, 9),
         limit: parseInt(limit, 9),

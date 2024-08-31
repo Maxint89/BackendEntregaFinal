@@ -99,21 +99,33 @@ router.put("/:cid", async (req, res) => {
 });
 
 // Actualizar cantidad de un producto en el carrito
-router.put("/:cid/products/:pid", async (req, res) => {
-    const carritoId = req.params.cid;
-    const productoId = req.params.pid;
-    const cantidad = req.body.quantity;
+router.put("/:cid/product/:pid", async (req, res) => {
+    const cartId = req.params.cid;
+    const productId = req.params.pid;
+    const { quantity } = req.body;
+
+    if (!quantity || quantity < 1) {
+        return res.status(400).json({ error: "Cantidad invalidad, elija una cantidad positiva y mayor a 0" });
+    }
 
     try {
-        const carritoActualizado = await cartManager.actualizarCantidadProducto(carritoId, productoId, cantidad);
-        if (carritoActualizado) {
-            res.json({ success: true, data: carritoActualizado.products });
-        } else {
-            res.status(404).json({ success: false, error: "Carrito o producto no encontrado" });
-        }
+        const updatedCart = await cartManager.actualizarCantidadProducto(cartId, productId, quantity);
+        res.json(updatedCart.products);
     } catch (error) {
-        console.error("Error al actualizar la cantidad del producto en el carrito:", error);
-        res.status(500).json({ success: false, error: "No se pudo actualizar la cantidad del producto" });
+        console.error("Error al actualizar la cantidad del producto en el carrito", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+// Eliminar un producto específico del carrito
+router.delete("/:cid/products/:pid", async (req, res) => {
+    const cartid = req.params.cid
+    const prodid = req.params.pid;
+    try {
+        const carrito = await cartManager.eliminarProductoDelCarrito(cartid, prodid);
+        res.send({ message: "Producto eliminado del carrito", carrito });
+    } catch (error) {
+        res.status(500).send({ status: "error", message: error.message });
     }
 });
 
