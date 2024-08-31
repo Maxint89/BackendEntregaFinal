@@ -1,6 +1,6 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #e0f7fa; /* Fondo suave color aqua */
+    background-color: #acea6e;
     margin: 0;
     padding: 0;
 }
@@ -8,22 +8,22 @@ body {
 .container, .formularioProductos {
     max-width: 800px;
     margin: 30px auto;
-    background-color: #ffffff; /* Fondo blanco para el contenedor */
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Sombra más intensa */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
 h1, h2 {
     text-align: center;
     margin-bottom: 25px;
-    color: #004d40; /* Color verde oscuro */
+    color: #163519; 
 }
 
 #contenedorProductos {
     width: 80%;
     margin: 20px auto;
-    background-color: #ffffff; /* Fondo blanco para el contenedor de productos */
+    background-color: #ffffff; 
     padding: 15px;
     border-radius: 12px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
@@ -34,26 +34,26 @@ h1, h2 {
 }
 
 .product-card {
-    background-color: #e9f2f8; /* Color de fondo suave verde limón */
-    border: 2px solid #c6ff00; /* Borde amarillo neón */
+    background-color: #d7de0b; 
+    border: 2px solid #c6ff00; 
     padding: 20px;
     width: 280px;
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
     border-radius: 12px;
-    transition: transform 0.3s ease; /* Transición para el efecto hover */
+    transition: transform 0.3s ease; 
 }
 
 .product-card:hover {
-    transform: scale(1.05); /* Efecto de zoom al pasar el mouse */
+    transform: scale(1.05);
 }
 
 .product-card p {
     margin: 5px 0;
-    color: #00796b; /* Color verde más oscuro para el texto */
+    color: #163519; 
 }
 
 .delete-button {
-    background-color: #d32f2f; /* Color rojo intenso para el botón de eliminar */
+    background-color: #e01515;
     color: #ffffff;
     border: none;
     padding: 8px 15px;
@@ -64,7 +64,7 @@ h1, h2 {
 }
 
 .delete-button:hover {
-    background-color: #c62828; /* Rojo más oscuro al pasar el mouse */
+    background-color: #6f0a0a; 
 }
 
 .product-list {
@@ -73,8 +73,8 @@ h1, h2 {
 }
 
 .product-item {
-    background-color: #e8f5e9; /* Color de fondo suave verde claro */
-    border: 1px solid #a5d6a7; /* Borde verde claro */
+    background-color: #d7de0b;
+    border: 1px solid #c6ff00;
     border-radius: 8px;
     padding: 12px;
     margin-bottom: 15px;
@@ -82,12 +82,11 @@ h1, h2 {
 
 .product-item p {
     margin: 6px 0;
-    color: #004d40; /* Color verde oscuro para el texto */
+    color: #163519; 
 }
 
-/* Estilo para el mensaje cuando no hay productos */
 .product-list .product-item:first-child {
-    color: #616161; /* Color gris oscuro para el texto */
+    color: #616161;
 }
 
 .form-group {
@@ -97,14 +96,14 @@ h1, h2 {
 label {
     display: block;
     margin-bottom: 6px;
-    color: #004d40; /* Color verde oscuro para las etiquetas */
+    color: #083e14;
 }
 
 .input, .select {
     width: 100%;
     padding: 12px;
     font-size: 16px;
-    border: 1px solid #b2dfdb; /* Borde verde claro */
+    border: 1px solid #b2dfdb; 
     border-radius: 6px;
     box-sizing: border-box;
 }
@@ -113,13 +112,13 @@ select {
     width: 100%;
     padding: 12px;
     font-size: 16px;
-    border: 1px solid #b2dfdb; /* Borde verde claro */
+    border: 1px solid #c6ff00;
     border-radius: 6px;
     box-sizing: border-box;
 }
 
 .btn {
-    background-color: #0288d1; /* Azul brillante para el botón */
+    background-color: #3c32fb; 
     color: #ffffff;
     border: none;
     padding: 12px 25px;
@@ -130,5 +129,5 @@ select {
 }
 
 .btn:hover {
-    background-color: #0277bd; /* Azul más oscuro al pasar el mouse */
+    background-color: #112576;
 }
